@@ -303,10 +303,11 @@ where
                     // Check first & last point of the cell, if both are fully
                     // in the bounding box, then all the points of the cell will
                     // be.
-                    if limits.start.position <= first
-                        && first <= limits.end.position
-                        && limits.start.position <= last
-                        && last <= limits.end.position
+                    let first_after_start = limits.start.position.iter().zip(first.iter()).all(|(&a, &b)| a <= b);
+                    let last_after_start = limits.start.position.iter().zip(last.iter()).all(|(&a, &b)| a <= b);
+                    let first_before_end = limits.end.position.iter().zip(first.iter()).all(|(&a, &b)| a >= b);
+                    let last_before_end = limits.end.position.iter().zip(last.iter()).all(|(&a, &b)| a >= b);
+                    if first_after_start && last_after_start && first_before_end && last_before_end
                     {
                         for record in &self.index[idx].records {
                             if let Ok(key) = self.position(code, &record.offsets) {
@@ -325,7 +326,9 @@ where
                                 Ok(r) => r,
                             };
 
-                            if limits.start.position <= pos && pos <= limits.end.position {
+                            let pos_after_start = limits.start.position.iter().zip(pos.iter()).all(|(&a, &b)| a <= b);
+                            let pos_before_end = limits.end.position.iter().zip(pos.iter()).all(|(&a, &b)| a >= b);
+                            if pos_after_start && pos_before_end {
                                 if let Ok(key) = self.position(code, &record.offsets) {
                                     values.push((key, &record.fields));
                                 }
