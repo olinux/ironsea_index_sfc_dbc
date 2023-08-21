@@ -362,7 +362,7 @@ where
     }
 }
 
-impl<F, K, V> Load for SpaceFillingCurve<F, K, V>
+impl<F, K, V> Load for SpaceFillingCurve<F,K, V>
 where
     F: PartialEq + DeserializeOwned,
     K: Debug + DeserializeOwned + FromIterator<V> + Index<usize, Output = V>,
